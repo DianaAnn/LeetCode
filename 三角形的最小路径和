@@ -1,0 +1,52 @@
+给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+
+相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
+
+ 
+
+例如，给定三角形：
+
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+
+ 
+
+说明：
+
+如果你可以只使用 O(n) 的额外空间（n 为三角形的总行数）来解决这个问题，那么你的算法会很加分。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/triangle
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+
+
+
+
+
+
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        n = len(triangle)
+        self.memo = [[float(inf) for i in range(n)] for i in range(n)]
+        self.dfs(triangle, 0, 0)
+        return self.memo[0][0] # 自底向上
+
+    def dfs(self, triangle: List[List[int]], x: int, y: int) -> int:
+        n = len(triangle)
+        # 递归终止条件
+        if(x >= n):
+            return 0
+        # 坐标[x, y]位置已经搜索出最优值, 不必继续深搜, 保持原数
+        if(self.memo[x][y] != float(inf)):
+            return self.memo[x][y]
+        
+        down = self.dfs(triangle, x + 1, y)
+        down_right = self.dfs(triangle, x + 1, y + 1)
+        self.memo[x][y] = min(down, down_right) + triangle[x][y]
+        return self.memo[x][y]
